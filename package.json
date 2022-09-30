@@ -1,5 +1,5 @@
 {
-  "name": "sql-next",
+  "name": "next-sql",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.3",
+    "mysql2": "^2.3.3",
     "next": "12.3.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-hot-toast": "^2.4.0",
+    "serverless-mysql": "^1.5.4"
   },
   "devDependencies": {
     "@types/node": "18.7.23",
