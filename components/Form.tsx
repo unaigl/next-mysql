@@ -1,30 +1,66 @@
-import React, { EventHandler } from "react";
+import React, { EventHandler, ChangeEventHandler } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
+import { Product } from "../types/products";
+
+//TODO Review types
+interface HandleProps {
+  target: (EventTarget & HTMLInputElement) | HTMLTextAreaElement;
+}
 
 const Form = () => {
+  const router = useRouter();
+
   const [product, setProduct] = React.useState({
     name: "",
     description: "",
     price: 0,
   });
 
-  const handlePost: React.FormEventHandler<HTMLFormElement> = async () => {
-    await axios.post("/api/products", {
-      name: product.name,
-      description: product.description,
-      price: product.price,
-    });
+  React.useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const result = await axios.get("/api/products/" + router.query.id);
+        const product: Product = result.data["0"];
+        setProduct(product);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (router.query.id) fetchProduct();
+  }, [router.query.id]);
+
+  const handlePost: React.FormEventHandler<HTMLFormElement> = async (
+    e: any
+  ) => {
+    e.preventDefault();
+
+    if (router.query.id) {
+      try {
+        await axios.put("/api/products/" + router.query.id, {
+          name: product.name,
+          description: product.description,
+          price: product.price,
+        });
+        router.push("/");
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        await axios.post("/api/products", {
+          name: product.name,
+          description: product.description,
+          price: product.price,
+        });
+        router.push("/");
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
-  // const handleGet = async () => {
-  //   const log = await axios.get("/api/products");
-  //   console.log(log);
-  // };
-
-  const handleChange = ({ target: { name, value } }) => {
-    /* como parametro -> event: React.ChangeEvent<HTMLInputElement>  -> NO FUNCIONA*/
-    // const name = event.target.name as string;
-    // const value = event.target.name as string | number;
+  const handleChange = ({ target: { name, value } }: HandleProps) => {
     setProduct({ ...product, [name]: value });
   };
 
@@ -89,7 +125,7 @@ const Form = () => {
         </div>
 
         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-          Create product
+          {router.query.id ? "Update product" : "Create product"}
         </button>
       </form>
     </>
