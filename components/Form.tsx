@@ -16,10 +16,10 @@ const Form = () => {
     });
   };
 
-  const handleGet = async () => {
-    const log = await axios.get("/api/products");
-    console.log(log);
-  };
+  // const handleGet = async () => {
+  //   const log = await axios.get("/api/products");
+  //   console.log(log);
+  // };
 
   const handleChange = ({ target: { name, value } }) => {
     /* como parametro -> event: React.ChangeEvent<HTMLInputElement>  -> NO FUNCIONA*/
@@ -92,12 +92,6 @@ const Form = () => {
           Create product
         </button>
       </form>
-      <button
-        onClick={handleGet}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-      >
-        Console log products
-      </button>
     </>
   );
 };

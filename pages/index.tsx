@@ -5,11 +5,17 @@ import styles from "../styles/Home.module.css";
 import Form from "../components/Form";
 import axios, { AxiosResponse } from "axios";
 import { Product, Products } from "../types/products";
+import { MouseEventHandler, useState } from "react";
 
 const Home = (props: Products): JSX.Element => {
+  const [info, setInfo] = useState(false);
+
   // para modificar el createdAt y extraer la hora
-  const productsDescription = (rawProducts: Product[]) => {
-    const products = rawProducts.map((p: Product) => {
+  const showInfo: MouseEventHandler<HTMLButtonElement> = () => {
+    setInfo(!info);
+  };
+  const productsDescription = (): JSX.Element[] => {
+    const productsArr = props.products.map((p: Product) => {
       const { createdAT } = p;
       if (!createdAT) return "someday";
       const idx = createdAT.toString().split(" ");
@@ -22,6 +28,7 @@ const Home = (props: Products): JSX.Element => {
       console.log(createdAT, createdAT.toString(), hour);
       return ` ${p.name} with price of ${p.price}, for ${p.description} buyed at ${hour} XXX`;
     });
+    const products = productsArr.map((pr, key) => <p key={key}>{pr}</p>);
     return products;
   };
 
@@ -30,11 +37,14 @@ const Home = (props: Products): JSX.Element => {
       <Form />
       <br />
       <br />
-      <div>
-        {productsDescription(props.products).map((pr, key) => (
-          <p key={key}>{pr}</p>
-        ))}
-      </div>
+      <button
+        onClick={showInfo}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      >
+        Show products
+      </button>
+      <br />
+      {info && productsDescription()}
     </div>
   );
 };
