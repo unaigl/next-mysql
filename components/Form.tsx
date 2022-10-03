@@ -1,11 +1,11 @@
-import React, { EventHandler, ChangeEventHandler } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import React from "react";
 import { Product } from "../types/products";
 
 //TODO Review types
 interface HandleProps {
-  target: (EventTarget & HTMLInputElement) | HTMLTextAreaElement;
+  target: (EventTarget & HTMLInputElement) /*  */ | HTMLTextAreaElement;
 }
 
 const Form = () => {

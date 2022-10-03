@@ -1,8 +1,5 @@
-import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
-import Error from "next/error";
 import { pool } from "../../../config/db";
-import { Product, Products } from "../../../types/products";
 
 export default async function handler(
   req: NextApiRequest,
