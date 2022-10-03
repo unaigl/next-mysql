@@ -1,12 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { pool } from "../../../config/db";
-
-// arreglo manual, ya que no me ha cogido desde el body de la consulta http los typos
-interface PRODUCT {
-  name: string;
-  description: string;
-  price: number;
-}
+import { Product } from "../../../types/products";
 
 export default async function getHome(
   req: NextApiRequest,
@@ -14,21 +8,26 @@ export default async function getHome(
 ) {
   switch (req.method) {
     case "GET":
-      return res.status(202).json("PRODUCTS INDEX");
+      return await getProducts(req, res);
     case "POST":
-      console.log(req.body);
-      const { description, name, price } = req.body as PRODUCT;
-      // insertar en la tabla "product", no en la base de datos "productsdb". Ya que pool es una conexion con "productsdb"
-      const result = await pool.query("INSERT INTO product SET ? ", {
-        description,
-        name,
-        price,
-      });
-      console.log(result);
-      if (result) return res.status(202).json("saving to DB");
-      return res.status(502).json("fail");
+      return await createProduct(req, res);
   }
-
-  // const result = (await pool.query("SELECT NOW();")) as any;
-  // console.log(result[0][0]["NOW()"]);
 }
+
+const getProducts = async (req: NextApiRequest, res: NextApiResponse) => {
+  const data = await pool.query("SELECT * FROM product");
+  const products = data[0] as Product[];
+  if (!products) res.status(302).json("PRODUCTS does not exist");
+  return res.status(202).json(products);
+};
+
+const createProduct = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { description, name, price } = req.body as Product;
+  const products = await pool.query("INSERT INTO product SET ? ", {
+    description,
+    name,
+    price,
+  });
+  if (!products) return res.status(502).json("FAIL saving to DB");
+  return res.status(202).json(products);
+};
